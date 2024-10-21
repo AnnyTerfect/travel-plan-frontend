@@ -27,9 +27,12 @@ const targetCity = ref("");
 const fetchItineraryData = async () => {
   try {
     const id = route.params.id as string;
-    const response = await axios.get(`http://210.28.135.197:8081/get_plan`, {
-      params: { task_id: id },
-    });
+    const response = await axios.get(
+      import.meta.env.DEV ? "/get_plan" : "http://210.28.135.197:8081/get_plan",
+      {
+        params: { task_id: id },
+      },
+    );
     console.log(response.data);
 
     const itinerary = response.data.plan.itinerary;
