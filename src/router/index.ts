@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
-import IndexPage from "../views/index.vue";
-import QuerySubmit from "../views/query_submit.vue";
-import PlanTotal from "../views/plan_total.vue";
-import detail from "@/views/detail.vue";
+import HomePage from "@/views/HomeView.vue";
+import QuerySubmit from "@/views/QuerySubmitView.vue";
+import PlanTotal from "@/views/PlanTotalView.vue";
+import detail from "@/views/DetailView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: "/", name: "Index", component: IndexPage },
+    { path: "/", name: "Home", component: HomePage },
     { path: "/query-submit", name: "QuerySubmit", component: QuerySubmit },
     {
       path: "/plan-total/:id",
