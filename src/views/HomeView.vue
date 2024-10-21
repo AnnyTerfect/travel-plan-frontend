@@ -2,14 +2,9 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { Search } from "@element-plus/icons-vue";
+import TravelIsometric from "@/assets/Traveling-isometric.svg";
 
 const router = useRouter();
-
-const carouselImages = ref([
-  new URL("../assets/img1.jpg", import.meta.url).href,
-  new URL("../assets/img1.jpg", import.meta.url).href,
-  new URL("../assets/img1.jpg", import.meta.url).href,
-]);
 
 const startTravel = () => {
   router.push("/query-submit");
@@ -18,13 +13,9 @@ const startTravel = () => {
 
 <template>
   <header class="relative">
-    <div
-      class="h-screen flex flex-col justify-center items-center bg-black bg-opacity-50 text-center"
-    >
-      <h1 class="text-7xl text-white font-bold mb-8">XiaKe Agent</h1>
-      <p
-        class="w-4/5 mx-auto mb-12 text-4xl text-white font-bold leading-tight"
-      >
+    <div class="py-20 flex flex-col justify-center items-center text-center">
+      <h1 class="text-7xl font-bold mb-8">XiaKe Agent</h1>
+      <p class="w-4/5 mx-auto mb-12 text-2xl leading-tight text-gray-600">
         Hi, I'm your personal travel agent. <br />
         Let's get started!
       </p>
@@ -32,31 +23,21 @@ const startTravel = () => {
         round
         size="large"
         type="primary"
-        class="mt-8 text-xl px-8 py-4"
+        class="text-xl px-8 py-4"
         @click="startTravel"
       >
         <el-icon class="mr-4"><Search /></el-icon>
         Ask me
       </el-button>
-    </div>
 
-    <div class="absolute inset-0 -z-10">
-      <el-carousel height="100vh" indicator-position="none" :interval="4000">
-        <el-carousel-item v-for="(image, index) in carouselImages" :key="index">
-          <img
-            :src="image"
-            class="w-full h-full object-cover"
-            alt="Travel Image"
-          />
-        </el-carousel-item>
-      </el-carousel>
+      <TravelIsometric class="max-w-xl mx-auto" />
     </div>
   </header>
 
   <!-- 展示团队背景 -->
   <section class="bg-gray-50 py-32">
     <div class="max-w-4xl mx-auto px-4">
-      <h2 class="text-center text-4xl font-bold text-primary mb-8">
+      <h2 class="text-center text-4xl font-bold mb-8">
         Powered by a team you can trust
       </h2>
       <div class="flex justify-center space-x-8 mt-8">

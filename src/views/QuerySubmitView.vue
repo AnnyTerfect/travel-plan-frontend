@@ -2,6 +2,9 @@
 import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
+import { Search } from "@element-plus/icons-vue";
+import cityData from "@/assets/data/cities.json?raw";
+import Travel from "@/assets/travel.svg";
 
 const router = useRouter();
 
@@ -13,9 +16,24 @@ interface FormData {
   additionalRequirements: string;
 }
 
+interface CityListItem {
+  value: string;
+  label: string;
+}
+
+let cityOptions: CityListItem[] = [];
+try {
+  cityOptions = JSON.parse(cityData).map((city: string) => ({
+    value: city,
+    label: city,
+  }));
+} catch (error) {
+  console.error("Failed to parse the city data:", error);
+}
+
 const form = reactive<FormData>({
-  startCity: "上海",
-  destinationCity: "杭州",
+  startCity: "上海市",
+  destinationCity: "杭州市",
   peopleCount: 1,
   daysCount: 1,
   additionalRequirements: "",
@@ -41,134 +59,81 @@ const handleSearch = async () => {
     loading.value = false;
   }
 };
-
-const handleReset = () => {
-  Object.assign(form, {
-    startCity: "",
-    destinationCity: "",
-    peopleCount: 1,
-    daysCount: 1,
-    additionalRequirements: "",
-  });
-};
 </script>
 
 <template>
-  <!-- 全屏滚动效果 -->
-  <el-scrollbar class="h-screen" v-loading="loading">
-    <el-container
-      class="bg-gray-100 flex items-center justify-center min-h-screen"
-    >
-      <el-main class="w-full p-8 bg-white shadow-lg rounded-lg">
-        <!-- 标题Travel Plan -->
-        <el-row class="flex justify-center mb-8 mt-9">
-          <h1 class="text-5xl font-bold text-blue-900 text-center">
-            Travel Plan
-          </h1>
-        </el-row>
-        <!-- 起始城市、目的城市、人数、天数card -->
-        <el-row class="gap-8 mb-6">
-          <el-col :span="2"></el-col>
-          <el-col :span="9">
-            <!-- 起始城市、目的城市  -->
-            <el-card class="bg-blue-100 p-4 rounded-2xl mb-6">
-              <el-row class="gap-5 ml-1 mt-2">
-                <el-col :span="24">
-                  <el-form-item
-                    label="起始城市"
-                    label-position="top"
-                    label-width="200px"
-                  >
-                    <el-input
-                      v-model="form.startCity"
-                      placeholder="例如：北京"
-                      class="w-60 ml-6 rounded-2xl"
-                      size="large"
-                    ></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="24">
-                  <el-form-item
-                    label="目的城市"
-                    label-position="top"
-                    label-width="200px"
-                  >
-                    <el-input
-                      class="w-60 ml-6"
-                      size="large"
-                      v-model="form.destinationCity"
-                      placeholder="例如：南京"
-                    ></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </el-card>
-          </el-col>
-          <el-col :span="1"></el-col>
+  <Travel class="max-w-6xl mx-auto" />
+  
+  <div class="w-full max-w-5xl mx-auto border p-6 rounded-lg relative my-4">
+    <h1 class="text-5xl text-center my-6">Travel Plan</h1>
+    <div class="grid grid-cols-2 lg:flex space-x-2">
+      <el-form-item label="起始城市" label-position="top" class="flex-1">
+        <el-select
+          v-model="form.startCity"
+          filterable
+          placeholder="Select"
+          size="large"
+        >
+          <el-option
+            v-for="item in cityOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="目的城市" label-position="top" class="flex-1">
+        <el-select
+          v-model="form.destinationCity"
+          filterable
+          placeholder="Select"
+          size="large"
+        >
+          <el-option
+            v-for="item in cityOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="出行人数" label-position="top">
+        <el-input-number
+          v-model="form.peopleCount"
+          size="large"
+          :min="1"
+        ></el-input-number>
+      </el-form-item>
+      <el-form-item label="游玩天数" label-position="top">
+        <el-input-number
+          v-model="form.daysCount"
+          size="large"
+          :min="1"
+        ></el-input-number>
+      </el-form-item>
+    </div>
 
-          <el-col :span="9">
-            <el-card class="bg-blue-100 p-4 rounded-2xl mb-6">
-              <el-row class="gap-5 mt-2 ml-0.5">
-                <el-col :span="24">
-                  <el-form-item label="出行人数" label-width="100px">
-                    <el-input-number
-                      v-model="form.peopleCount"
-                      size="large"
-                      class="ml-6 rounded-2xl"
-                      :min="1"
-                    ></el-input-number>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="24">
-                  <el-form-item label="游玩天数" label-width="100px">
-                    <el-input-number
-                      v-model="form.daysCount"
-                      size="large"
-                      class="ml-6 rounded-2xl"
-                      :min="1"
-                    ></el-input-number>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </el-card>
-          </el-col>
-        </el-row>
-        <!-- 自然语言输入框 -->
-        <el-row>
-          <el-col :span="2"></el-col>
-          <el-col :span="19">
-            <el-card class="bg-blue-100 p-4 rounded-2xl mb-6">
-              <el-row class="mb-6 m-1 mt-6">
-                <el-form-item label="其他要求">
-                  <el-input
-                    type="textarea"
-                    v-model="form.additionalRequirements"
-                    placeholder="Please input"
-                    class="w-[50rem] ml-1"
-                    :rows="6"
-                  ></el-input>
-                </el-form-item>
-              </el-row>
-            </el-card>
-          </el-col>
-        </el-row>
-        <!-- 搜索、重置按钮 -->
-        <el-row class="flex justify-center mt-4">
-          <el-button
-            type="primary"
-            class="py-6 px-6 text-xl rounded-full bg-[#21bcbe] border-0 -ml-3"
-            @click="handleSearch"
-            >搜索</el-button
-          >
-          <el-button
-            type="default"
-            plain
-            class="py-6 px-6 text-xl rounded-full text-[#21bcbe] border-[#21bcbe] ml-[50px]"
-            @click="handleReset"
-            >重置</el-button
-          >
-        </el-row>
-      </el-main>
-    </el-container>
-  </el-scrollbar>
+    <el-form-item label="其他要求" label-position="top">
+      <el-input
+        type="textarea"
+        v-model="form.additionalRequirements"
+        placeholder="请输入您的其他要求"
+        class="w-full"
+        :rows="6"
+      ></el-input>
+    </el-form-item>
+
+    <div class="text-center">
+      <el-button
+        class="mx-auto"
+        type="primary"
+        size="large"
+        v-loading.fullscreen.lock="loading"
+        @click="handleSearch"
+      >
+        <el-icon class="mr-4"><Search /></el-icon>
+        开始规划
+      </el-button>
+    </div>
+  </div>
 </template>
