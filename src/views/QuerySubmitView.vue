@@ -1,35 +1,78 @@
+<script setup lang="ts">
+import { ref, reactive } from "vue";
+import { useRouter } from "vue-router";
+import axios from "axios";
+
+const router = useRouter();
+
+interface FormData {
+  startCity: string;
+  destinationCity: string;
+  peopleCount: number;
+  daysCount: number;
+  additionalRequirements: string;
+}
+
+const form = reactive<FormData>({
+  startCity: "上海",
+  destinationCity: "杭州",
+  peopleCount: 1,
+  daysCount: 1,
+  additionalRequirements: "",
+});
+
+const loading = ref(false);
+
+const handleSearch = async () => {
+  loading.value = true;
+  try {
+    const response = await axios.post(
+      "http://210.28.135.197:8081/test_plan",
+      form,
+    );
+    console.log("ok!", response.data);
+    router.push({
+      name: "PlanTotal",
+      params: { id: response.data.task_id },
+    });
+  } catch (error) {
+    console.error("Failed to send the form data:", error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const handleReset = () => {
+  Object.assign(form, {
+    startCity: "",
+    destinationCity: "",
+    peopleCount: 1,
+    daysCount: 1,
+    additionalRequirements: "",
+  });
+};
+</script>
+
 <template>
   <!-- 全屏滚动效果 -->
-  <el-scrollbar height="100vh" v-loading="loading">
+  <el-scrollbar class="h-screen" v-loading="loading">
     <el-container
       class="bg-gray-100 flex items-center justify-center min-h-screen"
     >
       <el-main class="w-full p-8 bg-white shadow-lg rounded-lg">
         <!-- 标题Travel Plan -->
-        <el-row
-          class="flex justify-center"
-          style="margin-bottom: 2rem; margin-top: 2.3rem"
-        >
-          <h1
-            class="text-3xl font-bold mb-4 text-blue-900 text-center"
-            style="font-weight: 700; font-size: 3.4rem"
-          >
+        <el-row class="flex justify-center mb-8 mt-9">
+          <h1 class="text-5xl font-bold text-blue-900 text-center">
             Travel Plan
           </h1>
         </el-row>
         <!-- 起始城市、目的城市、人数、天数card -->
-        <el-row :gutter="20" style="margin-bottom: 1.5rem">
+        <el-row class="gap-8 mb-6">
           <el-col :span="2"></el-col>
-          <el-col :span="9" style="margin-right: 0rem">
+          <el-col :span="9">
             <!-- 起始城市、目的城市  -->
-            <el-card
-              class="bg-blue-100 p-4 rounded-lg mb-6"
-              style="background: #cfdfe4; border-radius: 2cap"
-            >
-              <el-row
-                :gutter="20"
-                style="margin-left: 1cap; margin-top: 0.6cap"
-              >
+            <el-card class="bg-blue-100 p-4 rounded-2xl mb-6">
+              <el-row class="gap-5 ml-1 mt-2">
                 <el-col :span="24">
                   <el-form-item
                     label="起始城市"
@@ -39,11 +82,7 @@
                     <el-input
                       v-model="form.startCity"
                       placeholder="例如：北京"
-                      style="
-                        width: 15rem;
-                        margin-left: 1.5rem;
-                        border-radius: 2cap !important;
-                      "
+                      class="w-60 ml-6 rounded-2xl"
                       size="large"
                     ></el-input>
                   </el-form-item>
@@ -55,7 +94,7 @@
                     label-width="200px"
                   >
                     <el-input
-                      style="width: 15rem; margin-left: 1.5rem"
+                      class="w-60 ml-6"
                       size="large"
                       v-model="form.destinationCity"
                       placeholder="例如：南京"
@@ -68,24 +107,14 @@
           <el-col :span="1"></el-col>
 
           <el-col :span="9">
-            <!-- 人数、天数 -->
-            <el-card
-              class="bg-blue-100 p-4 rounded-lg mb-6"
-              style="background: #cfdfe4; border-radius: 2cap"
-            >
-              <el-row
-                :gutter="20"
-                style="margin-top: 0.6cap; margin-left: 0.1cap"
-              >
+            <el-card class="bg-blue-100 p-4 rounded-2xl mb-6">
+              <el-row class="gap-5 mt-2 ml-0.5">
                 <el-col :span="24">
                   <el-form-item label="出行人数" label-width="100px">
                     <el-input-number
                       v-model="form.peopleCount"
                       size="large"
-                      style="
-                        margin-left: 1.5rem;
-                        border-radius: 2cap !important;
-                      "
+                      class="ml-6 rounded-2xl"
                       :min="1"
                     ></el-input-number>
                   </el-form-item>
@@ -95,10 +124,7 @@
                     <el-input-number
                       v-model="form.daysCount"
                       size="large"
-                      style="
-                        margin-left: 1.5rem;
-                        border-radius: 2cap !important;
-                      "
+                      class="ml-6 rounded-2xl"
                       :min="1"
                     ></el-input-number>
                   </el-form-item>
@@ -111,17 +137,14 @@
         <el-row>
           <el-col :span="2"></el-col>
           <el-col :span="19">
-            <el-card
-              class="bg-blue-100 p-4 rounded-lg mb-6"
-              style="background: #cfdfe4; border-radius: 2cap"
-            >
-              <el-row class="mb-6" style="margin: 1cap; margin-top: 1.5cap">
+            <el-card class="bg-blue-100 p-4 rounded-2xl mb-6">
+              <el-row class="mb-6 m-1 mt-6">
                 <el-form-item label="其他要求">
                   <el-input
                     type="textarea"
                     v-model="form.additionalRequirements"
                     placeholder="Please input"
-                    style="width: 50rem; margin-left: 1cap"
+                    class="w-[50rem] ml-1"
                     :rows="6"
                   ></el-input>
                 </el-form-item>
@@ -130,33 +153,17 @@
           </el-col>
         </el-row>
         <!-- 搜索、重置按钮 -->
-        <el-row class="flex justify-center" style="margin-top: 1rem">
+        <el-row class="flex justify-center mt-4">
           <el-button
             type="primary"
-            style="
-              padding: 1.5rem 1.5rem;
-              font-size: 1.3rem;
-              border-radius: 140px;
-              background: rgb(33, 188, 190);
-              border: 0px;
-
-              margin-left: -12px;
-            "
+            class="py-6 px-6 text-xl rounded-full bg-[#21bcbe] border-0 -ml-3"
             @click="handleSearch"
             >搜索</el-button
           >
           <el-button
             type="default"
             plain
-            style="
-              padding: 1.5rem 1.5rem;
-              font-size: 1.3rem;
-              border-radius: 140px;
-              color: rgb(33, 188, 190);
-              border-color: rgb(33, 188, 190);
-
-              margin-left: 50px;
-            "
+            class="py-6 px-6 text-xl rounded-full text-[#21bcbe] border-[#21bcbe] ml-[50px]"
             @click="handleReset"
             >重置</el-button
           >
@@ -165,117 +172,3 @@
     </el-container>
   </el-scrollbar>
 </template>
-
-<script>
-import axios from "axios";
-export default {
-  data() {
-    return {
-      form: {
-        //表格初始化
-        startCity: "上海", //旅游出发城市
-        destinationCity: "杭州", //旅游目的城市
-        peopleCount: 1, //游玩人数
-        daysCount: 1, //游玩天数
-        additionalRequirements: "", //自然语言
-      },
-      loading: false, //向后端提交form后，如果还没得到后端的task_id，前端呈现loading 状态
-    };
-  },
-  methods: {
-    async handleSearch() {
-      this.loading = true; // 开启加载状态
-      try {
-        //后端接口
-        const response = await axios.post(
-          "http://210.28.135.197:8081/test_plan",
-          this.form,
-        );
-        //本地文件,随便找的一个
-        //const response = await axios.post('/plan_daily.json', this.form)
-        console.log("ok!", response.data);
-        //得到信息后跳转计划总览页面
-        this.$router.push({
-          name: "PlanTotal",
-          params: { id: response.data.task_id },
-        });
-      } catch (error) {
-        console.error("Failed to send the form data:", error);
-      } finally {
-        this.loading = false; // 请求结束后关闭加载状态
-      }
-    },
-    handleReset() {
-      //表单重置
-      this.form = {
-        startCity: "",
-        destinationCity: "",
-        peopleCount: 1,
-        daysCount: 1,
-        additionalRequirements: "",
-      };
-    },
-  },
-};
-</script>
-
-<style scoped>
-.el-card__body {
-  background: #a2bad4;
-}
-.bg-gray-100 {
-  background-color: #f7fafc;
-}
-.text-blue-900 {
-  color: #2a4365;
-}
-.bg-blue-100 {
-  background-color: #ebf8ff;
-}
-.bg-white {
-  background-color: #ffffff;
-}
-.flex {
-  display: flex;
-}
-.items-center {
-  align-items: center;
-}
-.justify-center {
-  justify-content: center;
-}
-.min-h-screen {
-  min-height: 100vh;
-}
-.w-full {
-  width: 100%;
-}
-.max-w-md {
-  max-width: 28rem;
-}
-.p-8 {
-  padding: 2rem;
-}
-.shadow-lg {
-  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-}
-.rounded-lg {
-  border-radius: 0.5rem;
-}
-.mb-4 {
-  margin-bottom: 1rem;
-}
-.mb-6 {
-  margin-bottom: 1.5rem;
-}
-.text-3xl {
-  font-size: 1.875rem;
-}
-.text-center {
-  text-align: center;
-}
-.el-form-item--label-top {
-  display: flex;
-  align-items: center;
-}
-</style>
