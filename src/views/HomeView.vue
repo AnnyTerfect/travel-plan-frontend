@@ -5,10 +5,6 @@ import { Search } from "@element-plus/icons-vue";
 
 const router = useRouter();
 
-const splitText = ref(
-  "Hi, I'm your  personal  travel  agent. Let's  get  started!".split(/\s+/),
-);
-
 const carouselImages = ref([
   new URL("../assets/img1.jpg", import.meta.url).href,
   new URL("../assets/img1.jpg", import.meta.url).href,
@@ -21,63 +17,70 @@ const startTravel = () => {
 </script>
 
 <template>
-  <el-scrollbar height="100vh">
-    <!-- 图片走马灯 -->
-    <el-carousel height="100vh" indicator-position="outside" :interval="4000">
-      <el-carousel-item v-for="(image, index) in carouselImages" :key="index">
-        <img
-          :src="image"
-          class="w-full h-full object-cover"
-          alt="Travel Image"
-        />
-      </el-carousel-item>
-    </el-carousel>
-
-    <!-- Header Section -->
-    <header
-      class="absolute top-0 left-0 w-full h-screen flex justify-center items-center bg-black bg-opacity-40"
+  <header class="relative">
+    <div
+      class="h-screen flex flex-col justify-center items-center bg-black bg-opacity-50 text-center"
     >
-      <div class="text-center">
-        <h1 class="text-8xl text-white font-bold mb-6">XiaKe Agent</h1>
-        <p
-          class="w-4/5 mx-auto mb-10 text-5xl text-white font-bold leading-tight"
-        >
-          <span
-            v-for="(word, index) in splitText"
-            :key="index"
-            class="inline-block mr-3"
-          >
-            {{ word }}
-          </span>
-        </p>
-        <el-button
-          round
-          size="large"
-          type="primary"
-          class="mt-8 bg-[#21bcbe] hover:bg-[#1a9a9c] border-0 px-16 py-6 text-3xl rounded-full transition duration-300"
-          @click="startTravel"
-        >
-          <el-icon class="mr-4"><Search /></el-icon>
-          Ask me
-        </el-button>
-      </div>
-    </header>
+      <h1 class="text-7xl text-white font-bold mb-8">XiaKe Agent</h1>
+      <p
+        class="w-4/5 mx-auto mb-12 text-4xl text-white font-bold leading-tight"
+      >
+        Hi, I'm your personal travel agent. <br />
+        Let's get started!
+      </p>
+      <el-button
+        round
+        size="large"
+        type="primary"
+        class="mt-8 text-xl px-8 py-4"
+        @click="startTravel"
+      >
+        <el-icon class="mr-4"><Search /></el-icon>
+        Ask me
+      </el-button>
+    </div>
 
-    <!-- 展示团队背景 -->
-    <section class="bg-white py-20 px-4">
-      <h2 class="text-5xl font-bold text-[#002c6a] mb-12">
-        由值得信赖的研发团队提供支持
+    <div class="absolute inset-0 -z-10">
+      <el-carousel height="100vh" indicator-position="none" :interval="4000">
+        <el-carousel-item v-for="(image, index) in carouselImages" :key="index">
+          <img
+            :src="image"
+            class="w-full h-full object-cover"
+            alt="Travel Image"
+          />
+        </el-carousel-item>
+      </el-carousel>
+    </div>
+  </header>
+
+  <!-- 展示团队背景 -->
+  <section class="bg-gray-50 py-32">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-center text-4xl font-bold text-primary mb-8">
+        Powered by a team you can trust
       </h2>
-      <!-- 可以在这里添加团队logo或其他内容 -->
-    </section>
-
-    <!-- Footer Section -->
-    <footer class="bg-gray-100 py-6">
-      <div class="max-w-7xl mx-auto px-4">
-        <p class="text-gray-600 text-base text-center">
-          © 2024 All rights reserved by China Travel
-        </p>
+      <div class="flex justify-center space-x-8 mt-8">
+        <!-- 示例: 添加4个圆形占位符作为团队成员头像或logo -->
+        <div
+          v-for="i in 4"
+          :key="i"
+          class="w-24 h-24 bg-gray-300 rounded-full"
+        ></div>
       </div>
-    </footer>
-  </el-scrollbar>
+    </div>
+  </section>
+
+  <!-- Footer Section -->
+  <footer class="bg-secondary py-8 text-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <p class="text-lg text-center">
+        © 2024 All rights reserved by China Travel
+      </p>
+      <div class="mt-4 flex justify-center space-x-6">
+        <a href="#" class="hover:text-sky-300">About Us</a>
+        <a href="#" class="hover:text-sky-300">Contact</a>
+        <a href="#" class="hover:text-sky-300">Privacy Policy</a>
+      </div>
+    </div>
+  </footer>
 </template>
