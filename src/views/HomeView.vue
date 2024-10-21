@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { Search } from "@element-plus/icons-vue";
 import TravelIsometric from "@/assets/Traveling-isometric.svg";
@@ -14,8 +13,8 @@ const startTravel = () => {
 <template>
   <header class="relative">
     <div class="py-20 flex flex-col justify-center items-center text-center">
-      <h1 class="text-7xl font-bold mb-8">XiaKe Agent</h1>
-      <p class="w-4/5 mx-auto mb-12 text-2xl leading-tight text-gray-600">
+      <h1 class="text-7xl font-bold">XiaKe Agent</h1>
+      <p class="mb-12 mt-4 text-2xl leading-tight text-gray-600">
         Hi, I'm your personal travel agent. <br />
         Let's get started!
       </p>
@@ -65,3 +64,14 @@ const startTravel = () => {
     </div>
   </footer>
 </template>
+
+<style scoped>
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+</style>
