@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { Calendar, MapLocation } from "@element-plus/icons-vue";
 import axios from "axios";
+import AMap from "@/lib/map";
 
 interface DailyPOI {
   title: string;
@@ -154,7 +155,7 @@ onMounted(() => {
         <el-row>
           <el-col :span="6"></el-col>
           <el-col :span="12">
-            <h1 class="text-[2.8cap] text-center font-bold text-[#1e3a8a]">
+            <h1 class="text-center font-bold text-[#1e3a8a]">
               {{ targetCity }}精彩旅程
             </h1>
           </el-col>
@@ -178,8 +179,9 @@ onMounted(() => {
                   type="text"
                   class="text-[#3b82f6]"
                   @click="viewDetails(day.day)"
-                  >详情 {{ day.day }}</el-button
                 >
+                  详情 {{ day.day }}
+                </el-button>
               </el-card>
             </el-col>
           </el-row>
