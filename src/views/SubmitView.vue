@@ -50,7 +50,7 @@ const handleSearch = async () => {
     );
 
     router.push({
-      name: "PlanTotal",
+      name: "PlanOverall",
       params: { id: response.data.task_id },
     });
   } catch (error) {
