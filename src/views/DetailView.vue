@@ -48,9 +48,12 @@ const fetchActivities = async () => {
   try {
     const day = route.params.day;
     const id = route.params.id;
-    const response = await axios.get(`http://210.28.135.197:8081/get_plan`, {
-      params: { task_id: id, day: day },
-    });
+    const response = await axios.get(
+      import.meta.env.DEV ? "/get_plan_detail" : "http://210.28.135.197:8081/get_plan",
+      {
+        params: { task_id: id, day: day },
+      },
+    );
     console.log(response.data);
     dailyPOI1.value = response.data.plan.position_detail;
     activities.value = response.data.plan.activities;
