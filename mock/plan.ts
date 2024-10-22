@@ -1,10 +1,11 @@
 import { MockMethod } from "vite-plugin-mock";
+import type { Plan, PlanDetail } from "types";
 
 export default [
   {
     url: "/get_plan",
     method: "get",
-    response: () => ({
+    response: (): { plan: Plan } => ({
       plan: {
         people_number: 1,
         start_city: "北京",
@@ -67,7 +68,7 @@ export default [
   {
     url: "/get_plan_detail",
     method: "get",
-    response: () => ({
+    response: (): { plan: PlanDetail } => ({
       plan: {
         intercity_transport_start: {
           start_time: "07:16",
@@ -76,7 +77,6 @@ export default [
           end: "南京禄口国际机场",
           FlightID: "FL159",
           type: "airplane",
-          transports: [],
           cost: 448.38,
           tickets: 1,
         },

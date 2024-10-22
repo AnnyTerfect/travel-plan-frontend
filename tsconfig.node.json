@@ -5,12 +5,17 @@
     "vitest.config.*",
     "cypress.config.*",
     "nightwatch.conf.*",
-    "playwright.config.*"
+    "playwright.config.*",
+    "mock",
+    "types"
   ],
   "compilerOptions": {
     "composite": true,
     "noEmit": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+
+    "baseUrl": ".",
+    "paths": { "@/*": ["src/*"] },
 
     "module": "ESNext",
     "moduleResolution": "Bundler",
