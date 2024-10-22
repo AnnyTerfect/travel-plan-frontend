@@ -48,7 +48,7 @@ const handleSearch = async () => {
       "http://210.28.135.197:8081/test_plan",
       form,
     );
-    console.log("ok!", response.data);
+
     router.push({
       name: "PlanTotal",
       params: { id: response.data.task_id },
