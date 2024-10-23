@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import aMap from "@/lib/map";
+import aMap, { planRoute } from "@/lib/map";
 import PlanDailyView from "@/components/PlanDailyView.vue";
 import TravelPlans from "@/assets/travel-plans.svg";
 import { Back } from "@element-plus/icons-vue";
@@ -56,6 +56,7 @@ async function loadPlanOverallData() {
 async function handleSelectDay(index: string) {
   activeDay.value = index;
   const activeDayNumber = Number(index) - 1;
+  const activeItinerary = planOverall.value.itinerary[activeDayNumber];
   if (!planDaily.value?.[activeDayNumber]) {
     loading.value = true;
     planDaily.value[activeDayNumber] = await fetchPlanDaily(
@@ -63,6 +64,10 @@ async function handleSelectDay(index: string) {
       activeDayNumber + 1,
     );
     loading.value = false;
+  }
+
+  if (map.value) {
+    planRoute(map.value, activeItinerary.positionDetail, 0);
   }
 
   scrollRef.value?.scrollTo({

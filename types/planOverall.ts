@@ -6,7 +6,7 @@ export interface Itinerary {
   startTime: string;
   endTime: string;
   position: string[];
-  positionDetail: PositionDetail;
+  positionDetail: PositionDetail[];
 }
 
 export interface ItineraryResponse {
@@ -15,7 +15,7 @@ export interface ItineraryResponse {
   start_time: string;
   end_time: string;
   position: string[];
-  position_detail: PositionDetail;
+  position_detail: PositionDetail[];
 }
 
 export interface PlanOverall {

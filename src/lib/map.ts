@@ -1,6 +1,11 @@
-import { STROKE_COLOR_LIST } from "@/constants";
 import AMapLoader from "@amap/amap-jsapi-loader";
-import type { AMapInstance, MapInstance, PositionDetail } from "types";
+import type {
+  AMapInstance,
+  MapInstance,
+  Polyline,
+  PositionDetail,
+  Route,
+} from "types";
 
 declare global {
   interface Window {
@@ -31,19 +36,30 @@ const aMap: AMapInstance = await AMapLoader.load({
   },
 });
 
+let polyline: Polyline;
+
 export function planRoute(
   map: MapInstance,
   locations: PositionDetail[],
-  index: number,
 ): Promise<void> {
   return new Promise((resolve, reject) => {
+    map.clearMap();
+    if (polyline) {
+      console.log(polyline);
+      map.remove(polyline);
+      polyline = undefined;
+    }
+
     aMap.plugin("AMap.Driving", () => {
-      const driving = new aMap.Driving({
-        map,
+      const drivingOption = {
         showTraffic: false,
         policy: aMap.DrivingPolicy.LEAST_TIME,
-      });
+      };
 
+      // 构造路线导航类
+      const driving = new aMap.Driving(drivingOption);
+
+      // 根据起终点经纬度规划驾车导航路线
       driving.search(
         locations[0],
         locations[locations.length - 1],
@@ -52,32 +68,77 @@ export function planRoute(
           showTraffic: false,
           extensions: "base",
         },
-        (
-          status: string,
-          result: { routes: { steps: { path: [number, number][] }[] }[] },
-        ) => {
+        function (status, result) {
+          // result即是对应的驾车导航信息，相关数据结构文档请参考 https://lbs.amap.com/api/javascript-api/reference/route-search#m_DrivingResult
           if (status === "complete") {
-            const path = result.routes[0].steps.flatMap(step => step.path);
-            const polyline = new aMap.Polyline({
-              path: path,
-              borderWeight: 1,
-              strokeColor: STROKE_COLOR_LIST[index % STROKE_COLOR_LIST.length],
-              lineJoin: "round",
-              strokeWeight: 3,
-              strokeOpacity: 0.8,
-              lineCap: "round",
-              isOutline: true,
-              outlineColor: "#ffffff",
-            });
-            map.add(polyline);
-            resolve();
+            if (result.routes && result.routes.length) {
+              // 绘制第一条路线，也可以按需求绘制其它几条路线
+              drawRoute(result.routes[0]);
+              resolve();
+            }
           } else {
-            reject(
-              new Error(`路线规划失败\nstatus: ${status}\nresult: ${result}`),
-            );
+            reject(new Error("获取驾车数据失败：" + result));
           }
         },
       );
+
+      function drawRoute(route: Route) {
+        const path = parseRouteToPath(route);
+
+        const startMarker = new aMap.Marker({
+          position: path[0],
+          icon: "https://webapi.amap.com/theme/v1.3/markers/n/start.png",
+          map,
+        });
+
+        const centerMarkers = locations.slice(1, locations.length - 1).map(
+          position =>
+            new aMap.Marker({
+              position,
+              icon: "https://webapi.amap.com/theme/v1.3/markers/n/mid.png",
+              map,
+            }),
+        );
+
+        const endMarker = new aMap.Marker({
+          position: path[path.length - 1],
+          icon: "https://webapi.amap.com/theme/v1.3/markers/n/end.png",
+          map,
+        });
+
+        const routeLine = new aMap.Polyline({
+          path: path,
+          isOutline: true,
+          outlineColor: "#ffeeee",
+          borderWeight: 2,
+          strokeWeight: 5,
+          strokeOpacity: 0.9,
+          strokeColor: "#0091ff",
+          lineJoin: "round",
+          lineCap: "round",
+        });
+
+        map.add(routeLine);
+
+        // 调整视野达到最佳显示区域
+        map.setFitView([startMarker, ...centerMarkers, endMarker, routeLine]);
+      }
+
+      // 解析DrivingRoute对象，构造成AMap.Polyline的path参数需要的格式
+      // DrivingResult对象结构参考文档 https://lbs.amap.com/api/javascript-api/reference/route-search#m_DriveRoute
+      function parseRouteToPath(route: Route) {
+        const path = [];
+
+        for (let i = 0, l = route.steps.length; i < l; i++) {
+          const step = route.steps[i];
+
+          for (let j = 0, n = step.path.length; j < n; j++) {
+            path.push(step.path[j]);
+          }
+        }
+
+        return path;
+      }
     });
   });
 }
