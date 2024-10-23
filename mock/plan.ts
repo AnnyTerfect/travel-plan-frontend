@@ -1,11 +1,11 @@
 import { MockMethod } from "vite-plugin-mock";
-import type { Plan, PlanDetail } from "types";
+import type { PlanOverallResponse, PlanDailyResponse } from "types";
 
 export default [
   {
     url: "/get_plan",
     method: "get",
-    response: (): { plan: Plan } => ({
+    response: (): PlanOverallResponse["data"] => ({
       plan: {
         people_number: 1,
         start_city: "北京",
@@ -15,6 +15,7 @@ export default [
         itinerary: [
           {
             day: 1,
+            cost: 500,
             start_time: "07:16",
             end_time: "18:26",
             position: [
@@ -38,6 +39,7 @@ export default [
           },
           {
             day: 2,
+            cost: 15,
             start_time: "07:16",
             end_time: "18:26",
             position: [
@@ -68,7 +70,7 @@ export default [
   {
     url: "/get_plan_detail",
     method: "get",
-    response: (): { plan: PlanDetail } => ({
+    response: (): PlanDailyResponse["data"] => ({
       plan: {
         intercity_transport_start: {
           start_time: "07:16",
@@ -123,6 +125,7 @@ export default [
             start_time: "10:00",
             end_time: "11:30",
             food_list: [],
+            picture: "https://picsum.photos/200/300",
           },
           {
             trans_time: 45,
@@ -166,6 +169,7 @@ export default [
             start_time: "10:00",
             end_time: "11:30",
             food_list: [],
+            picture: "https://picsum.photos/200/300",
           },
         ],
         position_detail: [

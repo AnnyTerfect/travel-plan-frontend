@@ -1,4 +1,4 @@
-import { PositionDetail } from "./planOverall";
+import type { PositionDetail } from "./planOverall";
 
 export type DrivingPolicy =
   | "LEAST_TIME"

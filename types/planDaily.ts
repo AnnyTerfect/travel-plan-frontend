@@ -87,6 +87,8 @@ export interface PlanDaily {
   intercityTransportStart?: IntercityTransport;
   intercityTransportEnd?: IntercityTransport;
   activities: Activity[];
+  positionDetail: [number, number][];
+  targetCity: string;
 }
 
 export interface PlanDailyResponse {
@@ -95,6 +97,8 @@ export interface PlanDailyResponse {
       intercity_transport_start?: IntercityTransportResponse;
       intercity_transport_end?: IntercityTransportResponse;
       activities: ActivityResponse[];
+      position_detail: [number, number][];
+      target_city: string;
     };
   };
 }

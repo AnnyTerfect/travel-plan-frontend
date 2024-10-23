@@ -67,7 +67,7 @@ async function handleSelectDay(index: string) {
   }
 
   if (map.value) {
-    planRoute(map.value, activeItinerary.positionDetail, 0);
+    planRoute(map.value, activeItinerary.positionDetail);
   }
 
   scrollRef.value?.scrollTo({

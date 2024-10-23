@@ -132,10 +132,15 @@ export async function fetchPlanDaily(
         foodList: food_list,
       }),
     );
+    const positionDetail = plan.position_detail;
+    const targetCity = plan.target_city;
+
     return {
       intercityTransportStart,
       intercityTransportEnd,
       activities,
+      positionDetail,
+      targetCity,
     };
   } catch (error) {
     throw new Error(`Failed to load activities: ${error}`);
