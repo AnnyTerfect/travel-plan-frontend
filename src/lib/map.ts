@@ -1,11 +1,5 @@
 import AMapLoader from "@amap/amap-jsapi-loader";
-import type {
-  AMapInstance,
-  MapInstance,
-  Polyline,
-  PositionDetail,
-  Route,
-} from "types";
+import type { AMapInstance, MapInstance, PositionDetail, Route } from "types";
 
 declare global {
   interface Window {
@@ -36,19 +30,12 @@ const aMap: AMapInstance = await AMapLoader.load({
   },
 });
 
-let polyline: Polyline;
-
 export function planRoute(
   map: MapInstance,
   locations: PositionDetail[],
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     map.clearMap();
-    if (polyline) {
-      console.log(polyline);
-      map.remove(polyline);
-      polyline = undefined;
-    }
 
     aMap.plugin("AMap.Driving", () => {
       const drivingOption = {
