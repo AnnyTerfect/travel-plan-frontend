@@ -116,6 +116,7 @@ onUnmounted(() => {
             <el-menu-item
               :index="String(day.day)"
               v-for="day in planOverall.itinerary"
+              class="select-none"
               :key="day.day"
             >
               Day {{ day.day }}
