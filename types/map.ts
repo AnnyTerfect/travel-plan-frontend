@@ -63,4 +63,5 @@ export interface AMapInstance {
 
 export interface MapInstance {
   add: (polyline: Polyline) => void;
+  destroy: () => void;
 }

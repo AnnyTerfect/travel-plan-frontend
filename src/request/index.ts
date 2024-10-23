@@ -41,7 +41,7 @@ export async function fetchPlanOverall(taskId: string): Promise<PlanOverall> {
 
 export async function fetchPlanDaily(
   taskId: string,
-  day: string,
+  day: number,
 ): Promise<PlanDaily> {
   try {
     const response: PlanDailyResponse = await axios.get(

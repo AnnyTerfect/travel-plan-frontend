@@ -1,17 +1,21 @@
+export type PositionDetail = [number, number];
+
 export interface Itinerary {
   day: number;
+  cost: number;
   startTime: string;
   endTime: string;
   position: string[];
-  positionDetail: number[][];
+  positionDetail: PositionDetail;
 }
 
 export interface ItineraryResponse {
   day: number;
+  cost: number;
   start_time: string;
   end_time: string;
   position: string[];
-  position_detail: number[][];
+  position_detail: PositionDetail;
 }
 
 export interface PlanOverall {
