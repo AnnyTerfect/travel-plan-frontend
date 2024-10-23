@@ -27,7 +27,8 @@ const planOverall = ref<PlanOverall>({
 const planDaily = ref<PlanDaily[]>([]);
 const scrollY = ref(0);
 
-const planRef = ref<HTMLElement | null>(null);
+const scrollRef = ref<HTMLElement | null>(null);
+const headerRef = ref<HTMLElement | null>(null);
 
 const activeDayNumber = computed(() => Number(activeDay.value) - 1);
 const activeItinerary = computed(() => {
@@ -64,8 +65,9 @@ async function handleSelectDay(index: string) {
     loading.value = false;
   }
 
-  planRef.value?.scrollTo({
-    top: 0,
+  scrollRef.value?.scrollTo({
+    left: 0,
+    top: headerRef.value?.offsetTop || 0,
     behavior: "smooth",
   });
 }
@@ -91,13 +93,13 @@ onUnmounted(() => {
         @click="() => router.back()"
       />
 
-      <el-scrollbar class="h-full px-2" @scroll="handleScroll">
+      <el-scrollbar ref="scrollRef" class="h-full px-2" @scroll="handleScroll">
         <TravelPlans
-          class="w-full mx-auto origin-top transition-all duration-100"
-          :style="{ width: `calc(100% - ${Math.min(scrollY, 400)}px)` }"
+          class="w-full mx-auto origin-bottom transition-all duration-[50ms]"
+          :style="{ scale: `${1 - scrollY / 1000}` }"
         />
 
-        <div class="sticky top-0 z-10 bg-white">
+        <div ref="headerRef" class="sticky top-0 z-10 bg-white">
           <div class="p-4">
             <h1 class="text-3xl text-center">
               {{ planOverall.targetCity }}
@@ -121,7 +123,7 @@ onUnmounted(() => {
           </el-menu>
         </div>
 
-        <div ref="planRef" class="mt-8 min-h-screen">
+        <div class="min-h-screen">
           <template v-if="activeItinerary">
             <el-card class="rounded-[10px] mb-[10px]">
               <h3 class="font-bold">Day {{ activeItinerary.day }}</h3>
