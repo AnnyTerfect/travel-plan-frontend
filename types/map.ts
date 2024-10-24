@@ -84,5 +84,7 @@ export interface MapInstance {
   remove: (polyline: Polyline) => void;
   clearMap: () => void;
   destroy: () => void;
+  setCenter: (position: PositionDetail) => void;
+  setZoomAndCenter: (zoom: number, position: PositionDetail) => void;
   setFitView: (args: unknown[]) => void;
 }
