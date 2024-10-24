@@ -10,7 +10,7 @@ import type {
 export async function fetchPlanOverall(taskId: string): Promise<PlanOverall> {
   try {
     const response: PlanOverallResponse = await axios.get(
-      import.meta.env.DEV ? "/get_plan" : "http://210.28.135.197:8081/get_plan",
+      "http://210.28.135.197:8081/get_plan",
       {
         params: { task_id: taskId },
       },
@@ -45,9 +45,7 @@ export async function fetchPlanDaily(
 ): Promise<PlanDaily> {
   try {
     const response: PlanDailyResponse = await axios.get(
-      import.meta.env.DEV
-        ? "/get_plan_detail"
-        : "http://210.28.135.197:8081/get_plan",
+      "http://210.28.135.197:8081/get_plan",
       {
         params: { task_id: taskId, day: day },
       },
