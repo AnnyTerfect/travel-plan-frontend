@@ -32,8 +32,8 @@ try {
 }
 
 const form = reactive<FormData>({
-  startCity: "上海市",
-  destinationCity: "杭州市",
+  startCity: "上海",
+  destinationCity: "杭州",
   peopleCount: 1,
   daysCount: 1,
   additionalRequirements: "",
