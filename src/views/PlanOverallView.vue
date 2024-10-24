@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import aMap, { planRoute } from "@/lib/map";
+import aMap, { markLocations, setCenter } from "@/lib/map";
 import PlanDailyView from "@/components/PlanDailyView.vue";
-import TravelPlans from "@/assets/travel-plans.svg";
+import TravelPlans from "@/assets/img/travel-plans.svg";
 import { Back } from "@element-plus/icons-vue";
-import type { MapInstance, PlanOverall, PlanDaily } from "types";
+import type { MapInstance, PlanOverall, PlanDaily, Activity } from "types";
 import { fetchPlanDaily, fetchPlanOverall } from "@/request";
 
 const route = useRoute();
@@ -34,6 +34,21 @@ const activeDayNumber = computed(() => Number(activeDay.value) - 1);
 const activeItinerary = computed(() => {
   return planOverall.value.itinerary[activeDayNumber.value];
 });
+const activePlanDaily = computed(() => planDaily.value[activeDayNumber.value]);
+const walkDistance = computed(() => {
+  let distance = 0;
+  if (!activePlanDaily.value) return 0;
+  for (const activity of activePlanDaily.value.activities) {
+    if (activity.transDetail) {
+      for (const detail of activity.transDetail) {
+        if (detail.mode === "walk") {
+          distance += detail.distance;
+        }
+      }
+    }
+  }
+  return distance;
+});
 
 function handleScroll({ scrollTop }: { scrollTop: number }) {
   scrollY.value = scrollTop;
@@ -50,6 +65,7 @@ async function loadPlanOverallData() {
   const id = route.params.id as string;
   planOverall.value = await fetchPlanOverall(id);
   planDaily.value[0] = await fetchPlanDaily(id, 1);
+  handleSelectDay("1");
   loading.value = false;
 }
 
@@ -67,7 +83,18 @@ async function handleSelectDay(index: string) {
   }
 
   if (map.value) {
-    planRoute(map.value, activeItinerary.positionDetail);
+    console.log(activeItinerary);
+    const hasInterCityTransportStart =
+      !!activePlanDaily.value.intercityTransportStart;
+    const hasInterCityTransportEnd =
+      !!activePlanDaily.value.intercityTransportEnd;
+    markLocations(
+      map.value,
+      activeItinerary.positionDetail,
+      activeItinerary.position
+        .slice(hasInterCityTransportStart ? 1 : 0)
+        .slice(0, hasInterCityTransportEnd ? -1 : undefined),
+    );
   }
 
   scrollRef.value?.scrollTo({
@@ -75,6 +102,22 @@ async function handleSelectDay(index: string) {
     top: headerRef.value?.offsetTop || 0,
     behavior: "smooth",
   });
+}
+
+function handleClickActivity(activity: Activity) {
+  if (map.value) {
+    const index = activeItinerary.value.position.findIndex(
+      name => name === activity.position,
+    );
+    const hasInterCityTransportStart =
+      !!activePlanDaily.value.intercityTransportStart;
+    // An extra position is added for the start of the intercity transport
+    const location =
+      activeItinerary.value.positionDetail[
+        index - (hasInterCityTransportStart ? 1 : 0)
+      ];
+    setCenter(map.value, location);
+  }
 }
 
 onMounted(() => {
@@ -98,10 +141,10 @@ onUnmounted(() => {
         @click="() => router.back()"
       />
 
-      <el-scrollbar ref="scrollRef" class="h-full px-2" @scroll="handleScroll">
+      <el-scrollbar ref="scrollRef" class="h-full pr-2" @scroll="handleScroll">
         <TravelPlans
           class="w-full mx-auto origin-bottom transition-all duration-[50ms]"
-          :style="{ scale: `${1 - scrollY / 1000}` }"
+          :style="{ scale: `${Math.max(1 - scrollY / 1000, 0)}` }"
         />
 
         <div ref="headerRef" class="sticky top-0 z-10 bg-white">
@@ -129,21 +172,35 @@ onUnmounted(() => {
           </el-menu>
         </div>
 
-        <div class="min-h-screen">
+        <div class="pt-4 min-h-screen bg-gray-100 space-y-2">
           <template v-if="activeItinerary">
-            <el-card class="rounded-[10px] mb-[10px]">
-              <h3 class="font-bold">Day {{ activeItinerary.day }}</h3>
-              <p>{{ activeItinerary.cost }} 元</p>
-              <p>{{ activeItinerary.position }}</p>
-              <el-button type="text" class="text-primary">
-                详情 {{ activeItinerary.day }}
-              </el-button>
+            <el-card shadow="never">
+              <template #default>
+                <div class="flex justify-around">
+                  <el-statistic :value="activeItinerary.positionDetail.length">
+                    <template #title>
+                      <h3>到达景点</h3>
+                    </template>
+                  </el-statistic>
+                  <el-statistic :value="walkDistance">
+                    <template #title>
+                      <h3>步行 (km)</h3>
+                    </template>
+                  </el-statistic>
+                  <el-statistic :value="activeItinerary.cost">
+                    <template #title>
+                      <h3>花费 (RMB)</h3>
+                    </template>
+                  </el-statistic>
+                </div>
+              </template>
             </el-card>
           </template>
 
           <plan-daily-view
             v-if="planDaily[activeDayNumber]"
             :planDaily="planDaily[activeDayNumber]"
+            @click-activity="handleClickActivity"
           />
         </div>
       </el-scrollbar>

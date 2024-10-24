@@ -1,7 +1,20 @@
 <script setup lang="ts">
 import IntercityTransportCard from "./IntercityTransportCard.vue";
 import ActivityTimeline from "./ActivityTimeline.vue";
-import type { PlanDaily } from "types";
+import type { Activity, PlanDaily } from "types";
+
+const emits = defineEmits<{
+  clickTrans: [Activity];
+  clickActivity: [Activity];
+}>();
+
+function proxyClickTrans(activity: Activity) {
+  emits("clickTrans", activity);
+}
+
+function proxyClickActivity(activity: Activity) {
+  emits("clickActivity", activity);
+}
 
 const props = defineProps<{
   planDaily: PlanDaily;
@@ -14,7 +27,11 @@ const props = defineProps<{
     :transport="props.planDaily.intercityTransportStart"
   />
   <!-- 游玩路径 -->
-  <ActivityTimeline :activities="props.planDaily.activities" />
+  <ActivityTimeline
+    :activities="props.planDaily.activities"
+    @click-trans="proxyClickTrans"
+    @click-activity="proxyClickActivity"
+  />
   <!-- 跨城通行（结束） -->
   <IntercityTransportCard
     v-if="props.planDaily.intercityTransportEnd"

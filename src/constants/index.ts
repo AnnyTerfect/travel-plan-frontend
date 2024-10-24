@@ -1,4 +1,5 @@
-import { House, Bowl, Place } from "@element-plus/icons-vue";
+import { House, Bowl } from "@element-plus/icons-vue";
+import Place from "@/assets/icon/place.svg";
 
 export const STROKE_COLOR_LIST = [
   "#417ab5",
