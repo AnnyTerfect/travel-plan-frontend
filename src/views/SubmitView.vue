@@ -4,7 +4,7 @@ import { useRouter } from "vue-router";
 import axios from "axios";
 import { Search } from "@element-plus/icons-vue";
 import cityData from "@/assets/data/cities.json?raw";
-import Travel from "@/assets/travel.svg";
+import Travel from "@/assets/img/travel.svg";
 
 const router = useRouter();
 

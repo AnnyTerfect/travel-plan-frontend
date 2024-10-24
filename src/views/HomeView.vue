@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import { Search } from "@element-plus/icons-vue";
-import TravelIsometric from "@/assets/Traveling-isometric.svg";
+import TravelIsometric from "@/assets/img/Traveling-isometric.svg";
 
 const router = useRouter();
 
