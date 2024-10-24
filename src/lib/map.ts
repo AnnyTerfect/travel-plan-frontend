@@ -30,6 +30,39 @@ const aMap: AMapInstance = await AMapLoader.load({
   },
 });
 
+export function markLocations(
+  map: MapInstance,
+  locations: PositionDetail[],
+  names?: string[],
+): void {
+  map.clearMap();
+  const markers = locations.map((location, index) => {
+    return new aMap.Marker({
+      position: location,
+      icon: `data:image/svg+xml,${encodeURIComponent(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#0091ff" fill-opacity="0.5"/><circle cx="16" cy="16" r="10" fill="#0091ff"/><text x="16" y="16" font-size="12" font-family="Arial" fill="#fff" text-anchor="middle" alignment-baseline="middle">${index + 1}</text></svg>`,
+      )}`,
+      map,
+    });
+  });
+
+  if (names) {
+    markers.forEach((marker, index) => {
+      const infoWindow = new aMap.InfoWindow({
+        content: names[index],
+        offset: new aMap.Pixel(16, 0),
+      });
+
+      marker.on("click", () => {
+        infoWindow.open(map, marker.getPosition());
+      });
+    });
+  }
+
+  // 调整视野达到最佳显示区域
+  map.setFitView(markers);
+}
+
 export function planRoute(
   map: MapInstance,
   locations: PositionDetail[],

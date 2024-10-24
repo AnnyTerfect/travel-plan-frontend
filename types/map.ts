@@ -8,10 +8,25 @@ export type DrivingPolicy =
 
 export type Polyline = unknown;
 
+export declare class InfoWindow {
+  constructor(options: { content: string; offset: Pixel });
+  open: (map: MapInstance, position: PositionDetail) => void;
+}
+
+export declare class Marker {
+  constructor(options: {
+    position: PositionDetail;
+    icon: string;
+    map: MapInstance;
+  });
+  on: (event: string, callback: () => void) => void;
+  getPosition: () => PositionDetail;
+}
 export interface Route {
   steps: { path: [number, number][] }[];
 }
 
+export type Pixel = unknown;
 export interface AMapInstance {
   plugin: (pluginName: string, callback: () => void) => void;
   DrivingPolicy: {
@@ -44,15 +59,13 @@ export interface AMapInstance {
       ) => void,
     ) => void;
   };
+  InfoWindow: typeof InfoWindow;
   Map: new (
     container: string,
     options: { zoom: number; center: PositionDetail },
   ) => MapInstance;
-  Marker: new (options: {
-    position: PositionDetail;
-    icon: string;
-    map: MapInstance;
-  }) => unknown;
+  Marker: typeof Marker;
+  Pixel: new (x: number, y: number) => Pixel;
   Polyline: new (options: {
     path: PositionDetail[];
     isOutline: boolean;
