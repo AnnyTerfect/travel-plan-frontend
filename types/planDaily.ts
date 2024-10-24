@@ -32,7 +32,7 @@ export interface Activity {
   transDistance: number;
   transCost: number;
   transType: string;
-  transDetail: TransDetail[];
+  transDetail?: TransDetail[];
   position: string;
   picture: string;
   type: ActivityType;
@@ -48,7 +48,7 @@ export interface ActivityResponse {
   trans_distance: number;
   trans_cost: number;
   trans_type: string;
-  trans_detail: TransDetailResponse[];
+  trans_detail?: TransDetailResponse[];
   position: string;
   picture: string;
   type: ActivityType;

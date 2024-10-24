@@ -103,7 +103,7 @@ export async function fetchPlanDaily(
         transDistance: trans_distance,
         transCost: trans_cost,
         transType: trans_type,
-        transDetail: trans_detail.map(
+        transDetail: trans_detail?.map(
           ({
             start,
             end,
