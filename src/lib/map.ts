@@ -55,6 +55,7 @@ export function markLocations(
 
       marker.on("click", () => {
         infoWindow.open(map, marker.getPosition());
+        map.setZoomAndCenter(14, marker.getPosition());
       });
     });
   }
@@ -161,6 +162,10 @@ export function planRoute(
       }
     });
   });
+}
+
+export function setCenter(map: MapInstance, location: PositionDetail): void {
+  map.setZoomAndCenter(16, location);
 }
 
 export function getCityPosition(city: string): Promise<PositionDetail> {
